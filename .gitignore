@@ -74,3 +74,4 @@ Thumbs.db
 *.mp3
 *.m4a
 /project
+.qt_for_python

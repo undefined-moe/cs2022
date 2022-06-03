@@ -14,6 +14,57 @@
    <string>MusicPlayer</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+    <layout class="QHBoxLayout" name="layout">
+      <item>
+        <layout class="QVBoxLayout" name="layoutLeft">
+          <item>
+            <widget class="QLineEdit" name="searchBox" />
+          </item>
+          <item>
+            <widget class="QListWidget" name="songList" />
+          </item>
+        </layout>
+      </item>
+      <item>
+        <layout class="QVBoxLayout" name="layoutRight">
+          <item>
+            <widget class="QWidget" name="topFiller" />
+          </item>
+          <item>
+            <layout class="QHBoxLayout" name="progressBarLine">
+              <item>
+                <widget class="QSlider" name="progressBar" />
+              </item>
+              <item>
+                <widget class="QLabel" name="currentPos" />
+              </item>
+              <item>
+                <widget class="QLabel" name="timerSep" />
+              </item>
+              <item>
+                <widget class="QLabel" name="totalLength" />
+              </item>
+            </layout>
+          </item>
+          <item>
+            <layout class="QHBoxLayout" name="actionsList">
+              <item>
+                <widget class="QPushButton" name="prevButton" />
+              </item>
+              <item>
+                <widget class="QPushButton" name="pauseButton" />
+              </item>
+              <item>
+                <widget class="QPushButton" name="stopButton" />
+              </item>
+              <item>
+                <widget class="QPushButton" name="nextButton" />
+              </item>
+            </layout>
+          </item>
+        </layout>
+      </item>
+    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar"/>
   <widget class="QStatusBar" name="statusbar"/>

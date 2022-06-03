@@ -6,6 +6,7 @@
 #include<QVBoxLayout>
 #include<QListWidget>
 #include<QLineEdit>
+#include<QMultimedia>
 #include<QDir>
 #include<QDebug>
 #include "taglib.cpp"
@@ -19,20 +20,19 @@ void MainWindow::addSong(SongInfo info) {
     auto item = new QListWidgetItem();
     auto widget = new QWidget();
     auto widgetLayout = new QVBoxLayout();
+    item->setWhatsThis(info.filepath);
 
     qInfo() << "addSong" << info.title << ' ' << info.artist;
 
     widgetLayout->addWidget(new QLabel(info.filename));
-    widgetLayout->addWidget(new QLabel(
-        info.title + " - " + info.artist
-    ));
+    widgetLayout->addWidget(new QLabel(info.title + " - " + info.artist));
 
     widgetLayout->addStretch();
     widgetLayout->setSizeConstraint(QLayout::SetFixedSize);
     widget->setLayout(widgetLayout);
     item->setSizeHint(widget->sizeHint());
-    songList->addItem(item);
-    songList->setItemWidget(item, widget);
+    ui->songList->addItem(item);
+    ui->songList->setItemWidget(item, widget);
 }
 
 QString dirStorage;
@@ -45,7 +45,7 @@ void MainWindow::loadDirectory(const QString dir) {
     }
     dirStorage = dir;
     auto filenames = directory.entryList(QStringList() << "*.mp3" << "*.wav" << "*.m4a", QDir::Files);
-    songList->clear();
+    ui->songList->clear();
     songs.clear();
     foreach(auto filename, filenames) {
         SongInfo s;
@@ -59,7 +59,7 @@ void MainWindow::loadDirectory(const QString dir) {
 }
 
 void MainWindow::searchBoxChanged(const QString& text) {
-    songList->clear();
+    ui->songList->clear();
     int cnt = 0;
     foreach(auto song, songs) {
         if (

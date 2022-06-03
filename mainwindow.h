@@ -25,15 +25,16 @@ private:
     void searchBoxChanged(const QString &text);
     void loadDirectory(const QString dir);
     void addSong(SongInfo song);
-    void playMusic(SongInfo song);
+    void playMusic(QListWidgetItem *item);
     void stopMusic();
+    void durationChanged(qint64 duration);
+    void positionChanged(qint64 duration);
     QMediaPlayer* player;
-    SongInfo vurrentPlaying;
+    SongInfo currentPlaying;
     QMenu* fileMenu;
     QAction* openAct;
     QAction* exitAct;
     QLabel* infoLabel;
-    QListWidget* songList;
     QList<SongInfo> songs;
 
 private slots:
