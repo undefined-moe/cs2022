@@ -11,9 +11,6 @@
 #include<QDebug>
 #include "taglib.cpp"
 
-int fileNameLength = 1024;
-int mp3TagSize = 128;
-
 using namespace std;
 
 void MainWindow::addSong(SongInfo info) {
@@ -21,21 +18,20 @@ void MainWindow::addSong(SongInfo info) {
     auto widget = new QWidget();
     auto widgetLayout = new QVBoxLayout();
     item->setWhatsThis(info.filepath);
-
-    qInfo() << "addSong" << info.title << ' ' << info.artist;
+    item->setText(info.filename + ' ' + info.album + ' ' + info.title + ' ' + info.artist);
+    item->setTextColor(QColor(255, 255, 255, 0));
 
     widgetLayout->addWidget(new QLabel(info.filename));
     widgetLayout->addWidget(new QLabel(info.title + " - " + info.artist));
-
     widgetLayout->addStretch();
     widgetLayout->setSizeConstraint(QLayout::SetFixedSize);
     widget->setLayout(widgetLayout);
     item->setSizeHint(widget->sizeHint());
     ui->songList->addItem(item);
     ui->songList->setItemWidget(item, widget);
-}
 
-QString dirStorage;
+    playlist->addMedia(QUrl::fromLocalFile(info.filepath));
+}
 
 void MainWindow::loadDirectory(const QString dir) {
     QDir directory(dir);
@@ -43,10 +39,10 @@ void MainWindow::loadDirectory(const QString dir) {
         statusBar()->showMessage(tr("Folder doesn't exist"));
         return;
     }
-    dirStorage = dir;
     auto filenames = directory.entryList(QStringList() << "*.mp3" << "*.wav" << "*.m4a", QDir::Files);
     ui->songList->clear();
     songs.clear();
+    playlist->clear();
     foreach(auto filename, filenames) {
         SongInfo s;
         s.filepath = dir + "/" + filename;
@@ -56,21 +52,4 @@ void MainWindow::loadDirectory(const QString dir) {
         songs << s;
     }
     statusBar()->showMessage(tr("Loaded %1 songs").arg(songs.length()));
-}
-
-void MainWindow::searchBoxChanged(const QString& text) {
-    ui->songList->clear();
-    int cnt = 0;
-    foreach(auto song, songs) {
-        if (
-            song.filename.indexOf(text) != -1
-            || song.artist.indexOf(text) != -1
-            || song.album.indexOf(text) != -1
-            || song.title.indexOf(text) != -1
-            ) {
-            cnt++;
-            addSong(song);
-        }
-    }
-    statusBar()->showMessage(tr("Matched %1 songs").arg(cnt));
 }

@@ -6,6 +6,7 @@
 #include<QMediaPlayer>
 #include<QLabel>
 #include<QListWidget>
+#include<QMediaPlaylist>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -22,14 +23,13 @@ private:
     Ui::MainWindow* ui;
     void createActions();
     void createMenus();
-    void searchBoxChanged(const QString &text);
     void loadDirectory(const QString dir);
     void addSong(SongInfo song);
-    void playMusic(QListWidgetItem *item);
     void stopMusic();
     void durationChanged(qint64 duration);
     void positionChanged(qint64 duration);
     QMediaPlayer* player;
+    QMediaPlaylist* playlist;
     SongInfo currentPlaying;
     QMenu* fileMenu;
     QAction* openAct;

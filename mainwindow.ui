@@ -25,6 +25,13 @@
           </item>
         </layout>
       </item>
+      <!-- <item>
+        <layout class="QVBoxLayout" name="layoutMiddle">
+          <item>
+            <widget class="QListWidget" name="playList" />
+          </item>
+        </layout>
+      </item> -->
       <item>
         <layout class="QVBoxLayout" name="layoutRight">
           <item>

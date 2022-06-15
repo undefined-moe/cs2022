@@ -8,8 +8,9 @@
 #include<QDir>
 #include<QPushButton>
 #include<QDebug>
+#include<QFileDialog>
 
-const QString dir = "/root/大作业";
+QString dir = QDir::currentPath();
 
 QString formatTime(qint64 t) {
     auto sec = t / 1000;
@@ -24,6 +25,9 @@ QString formatTime(qint64 t) {
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     player = new QMediaPlayer();
+    playlist = new QMediaPlaylist();
+    playlist->setPlaybackMode(QMediaPlaylist::Loop);
+    player->setPlaylist(playlist);
     stopMusic();
 
     ui->topFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -38,8 +42,21 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->prevButton->setShortcut(QKeySequence(Qt::ControlModifier | Qt::Key_Left));
     ui->nextButton->setShortcut(QKeySequence(Qt::ControlModifier | Qt::Key_Right));
 
-    connect(ui->searchBox, &QLineEdit::textChanged, this, &MainWindow::searchBoxChanged);
-    connect(ui->songList, &QListWidget::itemClicked, this, &MainWindow::playMusic);
+    connect(ui->searchBox, &QLineEdit::textChanged, this,
+        [this] {
+            for (auto item : ui->songList->findItems("", Qt::MatchContains)) {
+                item->setHidden(true);
+            }
+            auto match = ui->songList->findItems(ui->searchBox->text(), Qt::MatchContains);
+            for (auto item : match) {
+                item->setHidden(false);
+            }
+            statusBar()->showMessage(tr("Matched %1 songs").arg(match.length()));
+        });
+    connect(ui->songList, &QListWidget::itemClicked, this,
+        [this] {
+            playlist->setCurrentIndex(ui->songList->currentRow());
+        });
 
     connect(player, &QMediaPlayer::durationChanged, ui->progressBar, &QSlider::setMaximum);
     connect(player, &QMediaPlayer::durationChanged, this,
@@ -50,39 +67,54 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
         [this](qint64 position) {ui->currentPos->setText(formatTime(position));});
 
     connect(ui->progressBar, &QSlider::sliderMoved, player, &QMediaPlayer::setPosition);
+    connect(ui->prevButton, &QPushButton::clicked, playlist, &QMediaPlaylist::previous);
+    connect(ui->nextButton, &QPushButton::clicked, playlist, &QMediaPlaylist::next);
     connect(ui->stopButton, &QPushButton::clicked, this, &MainWindow::stopMusic);
     connect(ui->pauseButton, &QPushButton::clicked, this,
         [this] {
             if (player->state() == player->PlayingState) player->pause();
             else player->play();
-            ui->pauseButton->setIcon(style()->standardIcon(state == player->PlayingState
+            ui->pauseButton->setIcon(style()->standardIcon(player->state() == player->PlayingState
                 ? QStyle::StandardPixmap::SP_MediaPause
                 : QStyle::StandardPixmap::SP_MediaPlay));
         });
+    connect(playlist, &QMediaPlaylist::currentMediaChanged, this,
+        [this](QMediaContent item) {
+            auto filename = item.canonicalUrl().fileName();
+            qInfo() << playlist->currentMedia().canonicalUrl().fileName();
+            ui->songList->setCurrentItem(nullptr);
+            ui->songList->findItems(filename, Qt::MatchStartsWith)[0]->setSelected(true);
+            player->play();
+            qDebug() << "Playing " << filename;
+            statusBar()->showMessage("Playing: " + filename);
+        });
+
+    fileMenu = menuBar()->addMenu(tr("&File"));
+
+    auto openAct = new QAction(tr("&Open"), this);
+    openAct->setShortcuts(QKeySequence::Open);
+    openAct->setStatusTip(tr("Open a folder"));
+    connect(openAct, &QAction::triggered, this,
+        [this] {
+            dir = QFileDialog::getExistingDirectory(
+                this, tr("Open Directory"), QDir::currentPath(), QFileDialog::ShowDirsOnly
+            );
+            loadDirectory(dir);
+        });
+    fileMenu->addAction(openAct);
 
     exitAct = new QAction(tr("&Exit"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
     exitAct->setStatusTip(tr("Exit"));
     connect(exitAct, &QAction::triggered, this, []() {exit(0);});
-    fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(exitAct);
+
     statusBar()->showMessage(tr("Select a song to play"));
     setWindowTitle(tr("Music Player"));
     setMinimumSize(160, 160);
     resize(480, 320);
     qInfo() << "UI initialized";
     loadDirectory(dir);
-}
-
-void MainWindow::playMusic(QListWidgetItem* item) {
-    qDebug() << item;
-    QString filename = item->whatsThis();
-    qDebug() << "Playing " << filename;
-    statusBar()->showMessage("Loading file: " + filename);
-    player->setMedia(QUrl::fromLocalFile(filename));
-    player->play();
-    ui->pauseButton->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_MediaPause));
-    statusBar()->showMessage("Playing: " + filename);
 }
 
 void MainWindow::stopMusic() {
@@ -93,10 +125,6 @@ void MainWindow::stopMusic() {
     player->stop();
     ui->pauseButton->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_MediaPlay));
 }
-
-// void MainWindow::contextMenuEvent(QContextMenuEvent* event) {
-//     QMenu menu(this);
-// }
 
 MainWindow::~MainWindow() {
     qInfo() << "Shutting down";
