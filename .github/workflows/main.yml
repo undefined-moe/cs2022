@@ -19,13 +19,12 @@ jobs:
       uses: jurplel/install-qt-action@v2
       with:
         version: '5.12.8'
-        arch: win64_mingw81
-    - name: Qmake
-      run: qmake
-    - name: ls
-      run: ls -la
-    - name: make
-      run: make
+    - name: Run vcvars
+      run: |
+        call "%programfiles(x86)%\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        qmake
+        make
+      shell: cmd
     - uses: actions/upload-artifact@v3
       with:
         name: my-artifact
