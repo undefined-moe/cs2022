@@ -19,7 +19,7 @@ jobs:
       uses: jurplel/install-qt-action@v2
     - name: Run vcvars
       run: |
-        call "%programfiles%\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
+        call "%programfiles%\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         echo 1
         ls "%programfiles%\Microsoft Visual Studio\2022"
         qmake
