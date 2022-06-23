@@ -17,8 +17,6 @@ jobs:
         submodules: recursive
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
-      with:
-        version: '5.12.8'
     - name: Run vcvars
       run: |
         call "%programfiles(x86)%\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
