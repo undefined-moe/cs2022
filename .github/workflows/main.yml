@@ -17,6 +17,9 @@ jobs:
         submodules: recursive
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
+      with:
+        version: '5.12.8'
+        arch: win64_mingw81
     - name: Qmake
       run: qmake
     - name: ls
