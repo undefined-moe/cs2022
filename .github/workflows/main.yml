@@ -19,16 +19,9 @@ jobs:
       uses: jurplel/install-qt-action@v2
     - name: Run vcvars
       run: |
-        call "%programfiles%\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
-        ls "%programfiles(x86)%"
+        call "%programfiles(x86)%\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
         echo 1
-        ls "%programfiles%""
-        echo 2
-        ls "%programfiles%\Microsoft Visual Studio"
-        echo 3
-        ls "%programfiles%\Microsoft Visual Studio\2019"
-        echo 4
-        ls "%programfiles(x86)%\Microsoft Visual Studio"
+        ls "%programfiles(x86)%\Microsoft Visual Studio\2022"
         qmake
         make
       shell: cmd
