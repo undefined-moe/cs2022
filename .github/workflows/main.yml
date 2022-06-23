@@ -6,7 +6,6 @@ on:
 
 env:
   CI: true
-  YARN_ENABLE_IMMUTABLE_INSTALLS: 'false'
 
 jobs:
   build:
@@ -18,8 +17,12 @@ jobs:
         submodules: recursive
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
-    - name: Config And Install
-      run: qmake && make
+    - name: Qmake
+      run: qmake
+    - name: ls
+      run: ls -la
+    - name: make
+      run: make
     - uses: actions/upload-artifact@v3
       with:
         name: my-artifact
