@@ -19,10 +19,10 @@ jobs:
       uses: jurplel/install-qt-action@v2
     - name: Run vcvars
       run: |
-        call "%programfiles%\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
-        ls %programfiles(x86)%
+        call "%programfiles%\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
+        ls "%programfiles(x86)%"
         echo 1
-        ls %programfiles%
+        ls "%programfiles%""
         echo 2
         ls "%programfiles%\Microsoft Visual Studio"
         echo 3
