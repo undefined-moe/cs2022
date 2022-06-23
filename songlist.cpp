@@ -18,7 +18,7 @@ void MainWindow::addSong(SongInfo info) {
     auto widget = new QWidget();
     auto widgetLayout = new QVBoxLayout();
     item->setWhatsThis(info.filepath);
-    item->setText(info.filename + ' ' + info.album + ' ' + info.title + ' ' + info.artist);
+    item->setText(QString("                                                                                                   ") + info.filename + ' ' + info.album + ' ' + info.title + ' ' + info.artist);
     item->setTextColor(QColor(255, 255, 255, 0));
 
     widgetLayout->addWidget(new QLabel(info.filename));

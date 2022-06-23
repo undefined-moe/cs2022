@@ -83,8 +83,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
             auto filename = item.canonicalUrl().fileName();
             qInfo() << playlist->currentMedia().canonicalUrl().fileName();
             ui->songList->setCurrentItem(nullptr);
-            ui->songList->findItems(filename, Qt::MatchStartsWith)[0]->setSelected(true);
+            ui->songList->findItems(filename, Qt::MatchContains)[0]->setSelected(true);
             player->play();
+            ui->pauseButton->setIcon(style()->standardIcon(QStyle::StandardPixmap::SP_MediaPause));
             qDebug() << "Playing " << filename;
             statusBar()->showMessage("Playing: " + filename);
         });
