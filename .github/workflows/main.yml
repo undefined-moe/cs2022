@@ -23,9 +23,11 @@ jobs:
         ls %programfiles(x86)%
         echo 1
         ls %programfiles%
-        echo 1
-        ls "%programfiles(x86)%\Microsoft Visual Studio"
-        echo 1
+        echo 2
+        ls "%programfiles%\Microsoft Visual Studio"
+        echo 3
+        ls "%programfiles%\Microsoft Visual Studio\2019"
+        echo 4
         ls "%programfiles(x86)%\Microsoft Visual Studio"
         qmake
         make
