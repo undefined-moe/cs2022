@@ -43,11 +43,25 @@ void MainWindow::loadDirectory(const QString dir) {
     ui->songList->clear();
     songs.clear();
     playlist->clear();
+    QList<SongInfo> songs1;
     foreach(auto filename, filenames) {
         SongInfo s;
         s.filepath = dir + "/" + filename;
         s.filename = filename;
         s = GetTagInfo(s);
+        songs1 << s;
+    }
+    auto order = ui->comboBox->currentText();
+    std::sort(songs1.begin(), songs1.end(), [order](SongInfo a, SongInfo b) {
+        if (order == "By filename") {
+            return a.filename < b.filename;
+        } else if (order == "By artist") {
+            return a.artist < b.artist;
+        } else if (order == "By album") {
+            return a.album < b.album;
+        }
+        });
+    foreach(auto s, songs1) {
         addSong(s);
         songs << s;
     }

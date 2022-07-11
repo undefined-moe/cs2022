@@ -18,6 +18,9 @@
       <item>
         <layout class="QVBoxLayout" name="layoutLeft">
           <item>
+            <widget class="QComboBox" name="comboBox" />
+          </item>
+          <item>
             <widget class="QLineEdit" name="searchBox" />
           </item>
           <item>

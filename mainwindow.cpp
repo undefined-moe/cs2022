@@ -9,6 +9,7 @@
 #include<QPushButton>
 #include<QDebug>
 #include<QFileDialog>
+#include<QComboBox>
 
 QString dir = QDir::currentPath();
 
@@ -26,9 +27,13 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
     player = new QMediaPlayer();
     playlist = new QMediaPlaylist();
-    playlist->setPlaybackMode(QMediaPlaylist::Loop);
+    playlist->setPlaybackMode(QMediaPlaylist::PlaybackMode::CurrentItemInLoop);
     player->setPlaylist(playlist);
     stopMusic();
+
+    ui->comboBox->addItem("By filename");
+    ui->comboBox->addItem("By artist");
+    ui->comboBox->addItem("By album");
 
     ui->topFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     ui->progressBar->setOrientation(Qt::Orientation::Horizontal);
@@ -41,6 +46,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->pauseButton->setShortcut(QKeySequence(Qt::Key_Space));
     ui->prevButton->setShortcut(QKeySequence(Qt::ControlModifier | Qt::Key_Left));
     ui->nextButton->setShortcut(QKeySequence(Qt::ControlModifier | Qt::Key_Right));
+
+    connect(ui->comboBox, &QComboBox::currentTextChanged, this,
+        [this](const QString& text) {
+            loadDirectory(dir);
+        });
 
     connect(ui->searchBox, &QLineEdit::textChanged, this,
         [this] {
